@@ -1,19 +1,20 @@
 import { Formik, Field, ErrorMessage } from 'formik';
 import { Form, Label, Button } from './ContactForm.styled';
 import { ContactSchema, phoneNumberMask } from 'components/Utils/Validate';
-import { nanoid } from 'nanoid';
+import { useDispatch } from 'react-redux';
+import { addContact } from 'redux/contactsSlice';
 import MaskedInput from 'react-text-mask';
-import PropTypes from 'prop-types';
 
-export const ContactForm = ({ onSubmit }) => {
-  const generateId = nanoid();
+export const ContactForm = () => {
+  const dispatch = useDispatch();
 
   return (
     <Formik
       initialValues={{ name: '', number: '' }}
       validationSchema={ContactSchema}
       onSubmit={(values, action) => {
-        onSubmit({ id: generateId, ...values }, { action });
+        dispatch(addContact(values));
+        action.resetForm();
       }}
     >
       <Form>
@@ -47,8 +48,4 @@ export const ContactForm = ({ onSubmit }) => {
       </Form>
     </Formik>
   );
-};
-
-ContactForm.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
 };
